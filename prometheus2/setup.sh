@@ -71,7 +71,7 @@ datasources:
   type: prometheus
   access: proxy
   orgId: 1
-  url: http://prometheus.apps.internal:8080
+  url: http://prometheus2.apps.internal:8080
   password:
   basicAuth: false
   isDefault: true
