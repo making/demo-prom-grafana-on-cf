@@ -1,0 +1,41 @@
+global:
+  evaluation_interval: 15s
+  scrape_interval: 15s
+scrape_configs:
+- job_name: prometheus
+  static_configs:
+  - targets:
+    - localhost:8080
+- job_name: demo-micrometer
+  metrics_path: /actuator/prometheus
+  scheme: http
+  scrape_interval: 20s
+  scrape_timeout: 5s
+  dns_sd_configs: # Example using CF App Service Discoverry
+  - names:
+    - demo-micrometer.apps.internal
+    refresh_interval: 30s
+    type: A
+    port: 8080
+  relabel_configs:
+  - source_labels: [__meta_dns_name]
+    separator: ;
+    regex: (.*).apps.internal
+    target_label: cf_app_name
+    replacement: ${1}
+    action: replace
+  # static_configs: # if CF App Service Discoverry is disabled
+  # - labels:
+  #     cf_app_name: demo-micrometer
+  #   targets:
+  #   - demo-micrometer.cfapps.io:80
+- job_name: tweet-micrometer
+  metrics_path: /actuator/prometheus
+  scheme: http
+  scrape_interval: 20s
+  scrape_timeout: 5s
+  static_configs:
+  - labels:
+      cf_app_name: tweet-micrometer
+    targets:
+    - tweet-micrometer.cfapps.io:80

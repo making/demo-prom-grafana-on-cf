@@ -18,49 +18,7 @@ if [ ! -d grafana-5.1.2/dashboards ];then
     curl -Ls https://github.com/making/demo-micrometer/raw/master/grafana/micrometer-ux-cf.json | sed 's/\${DS_PROMETHEUS}/prometheus/g' > grafana-5.1.2/dashboards/micrometer-ux-cf.json
 fi
 
-cat <<EOF > prometheus-2.2.1.linux-amd64/prometheus-cf.yml
-global:
-  evaluation_interval: 15s
-  scrape_interval: 15s
-scrape_configs:
-- job_name: prometheus
-  static_configs:
-  - targets:
-    - localhost:8080
-- job_name: demo-micrometer
-  metrics_path: /actuator/prometheus
-  scheme: http
-  scrape_interval: 20s
-  scrape_timeout: 5s
-  # static_configs:
-  # - labels:
-  #     cf_app_name: demo-micrometer
-  #   targets:
-  #   - demo-micrometer.cfapps.io:80
-  dns_sd_configs:
-  - names:
-    - demo-micrometer.apps.internal
-    refresh_interval: 30s
-    type: A
-    port: 8080
-  relabel_configs:
-  - source_labels: [__meta_dns_name]
-    separator: ;
-    regex: (.*).apps.internal
-    target_label: cf_app_name
-    replacement: ${1}
-    action: replace
-- job_name: tweet-micrometer
-  metrics_path: /actuator/prometheus
-  scheme: http
-  scrape_interval: 20s
-  scrape_timeout: 5s
-  static_configs:
-  - labels:
-      cf_app_name: tweet-micrometer
-    targets:
-    - tweet-micrometer.cfapps.io:80
-EOF
+cp ../prometheus.yml prometheus-2.2.1.linux-amd64/prometheus-cf.yml
 
 sed -e 's|^http_port = 3000$|http_port = 8080|' grafana-5.1.2/conf/defaults.ini > grafana-5.1.2/conf/grafana-cf.ini
 
