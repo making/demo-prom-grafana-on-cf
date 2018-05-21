@@ -1,0 +1,9 @@
+applications:
+- name: grafana5-for-prom1
+  buildpack: binary_buildpack
+  path: ./grafana-5.1.2
+  command: ./bin/grafana-server -config=./conf/grafana-cf.ini
+  disk_quota: 1G
+  instances: 1
+  memory: 128M
+  random-route: true

@@ -1,0 +1,9 @@
+applications:
+- name: prometheus1
+  buildpack: binary_buildpack
+  path: ./prometheus-1.8.2.linux-amd64
+  command: ./prometheus -web.listen-address=:8080 -config.file=./prometheus-cf.yml
+  disk_quota: 1G
+  instances: 1
+  memory: 128M
+  random-route: true
